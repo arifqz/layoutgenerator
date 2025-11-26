@@ -6,6 +6,7 @@ import zipfile
 import requests
 import textwrap
 import os
+import re
 
 # --- CONSTANTS ---
 MAX_WIDTH = 1700
@@ -131,10 +132,6 @@ with col2:
 if st.button("Generate Images") and sheet_url and uploaded_template:
     with st.spinner("Processing..."):
         try:
-import re
-
-# ... inside st.button("Generate Images") logic ...
-
             # 1. Load Sheet Data
             # Robust URL conversion using Regex to find the Sheet ID
             sheet_id_match = re.search(r'/d/([a-zA-Z0-9-_]+)', sheet_url)
@@ -230,4 +227,3 @@ import re
             
         except Exception as e:
             st.error(f"An error occurred: {e}")
-
