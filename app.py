@@ -131,12 +131,21 @@ with col2:
 if st.button("Generate Images") and sheet_url and uploaded_template:
     with st.spinner("Processing..."):
         try:
+import re
+
+# ... inside st.button("Generate Images") logic ...
+
             # 1. Load Sheet Data
-            # Convert /edit to /export format
-            if "/edit" in sheet_url:
-                export_url = sheet_url.replace("/edit", "/export?format=csv")
+            # Robust URL conversion using Regex to find the Sheet ID
+            sheet_id_match = re.search(r'/d/([a-zA-Z0-9-_]+)', sheet_url)
+            if sheet_id_match:
+                sheet_id = sheet_id_match.group(1)
+                export_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
             else:
-                export_url = sheet_url
+                st.error("Invalid Google Sheet URL. Could not find Sheet ID.")
+                st.stop()
+                
+            st.write(f"Debug: Fetching CSV from: `{export_url}`") # Optional: Show user what URL is being used
                 
             df = pd.read_csv(export_url)
             st.success(f"Loaded {len(df)} rows from Google Sheet!")
