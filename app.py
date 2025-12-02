@@ -191,6 +191,9 @@ if st.button("Generate Images") and sheet_url:
                             draw, def_text, FONT_FILES['normal'], def_size, 'Medium', MAX_WIDTH, wrapped=True, line_spacing=1.2
                         )
                         
+                    # --- FIX: Add [ ] to Pronunciation ---
+                    pron_text = f"[{pron_text}]"
+                    
                     h_pron, f_pron, _ = calculate_text_height(draw, pron_text, FONT_FILES['italic'], STYLES['Pronunciation']['size'], 'Italic', MAX_WIDTH, wrapped=True, line_spacing=1.2)
 
                     # Layout
