@@ -20,12 +20,12 @@ SPACING = 100
 # In Streamlit Cloud, we'll deploy the font files with the app.
 FONT_FILES = {
     'normal': 'Cabin-Variable.ttf',
-    'italic': 'Cabin-Italic-Variable.ttf'
+    'italic': 'helvetica.ttf'
 }
 
 STYLES = {
     'Title': {'size': 255, 'font_file': 'normal', 'variation': 'Bold', 'pos': POS_TITLE},
-    'Pronunciation': {'size': 116, 'font_file': 'italic', 'variation': 'Italic', 'pos': POS_PRONUNCIATION},
+    'Pronunciation': {'size': 116, 'font_file': 'italic', 'variation': None, 'pos': POS_PRONUNCIATION},
     'Definition': {'size': 157, 'font_file': 'normal', 'variation': 'Medium', 'pos': POS_DEFINITION}
 }
 
@@ -121,34 +121,20 @@ st.title("🖼️ Bulk Image Generator")
 st.markdown("Generate images from a Google Sheet and a Template.")
 
 # 1. INPUTS
-col1, col2 = st.columns(2)
+# Remove file uploader, only ask for Sheet URL
+sheet_url = st.text_input("Google Sheet URL (Must be 'Anyone with link can view')")
 
-with col1:
-    sheet_url = st.text_input("Google Sheet URL (Must be 'Anyone with link can view')")
-    
-with col2:
-    uploaded_template = st.file_uploader("Upload Template Image (PNG)", type="png")
-
-if st.button("Generate Images") and sheet_url and uploaded_template:
+if st.button("Generate Images") and sheet_url:
     with st.spinner("Processing..."):
         try:
-            # 1. Load Sheet Data
-            # Robust URL conversion using Regex to find the Sheet ID
-            sheet_id_match = re.search(r'/d/([a-zA-Z0-9-_]+)', sheet_url)
-            if sheet_id_match:
-                sheet_id = sheet_id_match.group(1)
-                export_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
-            else:
-                st.error("Invalid Google Sheet URL. Could not find Sheet ID.")
-                st.stop()
-                
-            st.write(f"Debug: Fetching CSV from: `{export_url}`") # Optional: Show user what URL is being used
-                
-            df = pd.read_csv(export_url)
-            st.success(f"Loaded {len(df)} rows from Google Sheet!")
+            # ... (Load sheet data) ...
             
-            # 2. Load Template
-            template_image = Image.open(uploaded_template).convert("RGBA")
+            # 2. Load Template (Default: blank.png)
+            if os.path.exists("blank.png"):
+                template_image = Image.open("blank.png").convert("RGBA")
+            else:
+                st.error("Error: blank.png not found in deployment.")
+                st.stop()
             
             # 3. Prepare ZIP buffer
             zip_buffer = io.BytesIO()
