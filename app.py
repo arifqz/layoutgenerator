@@ -20,7 +20,7 @@ SPACING = 100
 # In Streamlit Cloud, we'll deploy the font files with the app.
 FONT_FILES = {
     'normal': 'Cabin-Variable.ttf',
-    'italic': 'helvetica.ttf'
+    'italic': 'Helvetica.ttc'
 }
 
 STYLES = {
