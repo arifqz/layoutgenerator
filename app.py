@@ -127,7 +127,20 @@ sheet_url = st.text_input("Google Sheet URL (Must be 'Anyone with link can view'
 if st.button("Generate Images") and sheet_url:
     with st.spinner("Processing..."):
         try:
-            # ... (Load sheet data) ...
+            # 1. Load Sheet Data
+            # Robust URL conversion using Regex to find the Sheet ID
+            sheet_id_match = re.search(r'/d/([a-zA-Z0-9-_]+)', sheet_url)
+            if sheet_id_match:
+                sheet_id = sheet_id_match.group(1)
+                export_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
+            else:
+                st.error("Invalid Google Sheet URL. Could not find Sheet ID.")
+                st.stop()
+                
+            st.write(f"Debug: Fetching CSV from: `{export_url}`") # Optional: Show user what URL is being used
+                
+            df = pd.read_csv(export_url)
+            st.success(f"Loaded {len(df)} rows from Google Sheet!")
             
             # 2. Load Template (Default: blank.png)
             if os.path.exists("blank.png"):
