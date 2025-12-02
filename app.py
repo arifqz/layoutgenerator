@@ -19,8 +19,8 @@ SPACING = 100
 # We need to ensure fonts are available. 
 # In Streamlit Cloud, we'll deploy the font files with the app.
 FONT_FILES = {
-    'normal': 'Cabin-Variable.ttf',
-    'italic': 'Helvetica.ttc'
+    'normal': {'file': 'Cabin-Variable.ttf', 'index': 0},
+    'italic': {'file': 'Helvetica.ttc', 'index': 2}  # Index 2 is often Oblique/Italic in Mac TTCs
 }
 
 STYLES = {
@@ -29,9 +29,13 @@ STYLES = {
     'Definition': {'size': 157, 'font_file': 'normal', 'variation': 'Medium', 'pos': POS_DEFINITION}
 }
 
-def load_font(font_file, size, variation=None):
+def load_font(font_info, size, variation=None):
     try:
-        font = ImageFont.truetype(font_file, size)
+        font_file = font_info['file']
+        index = font_info.get('index', 0)
+        
+        font = ImageFont.truetype(font_file, size, index=index)
+        
         if variation and hasattr(font, 'set_variation_by_name'):
             try:
                 font.set_variation_by_name(variation)
